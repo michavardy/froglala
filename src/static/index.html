@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Froglala</title>
+    
+    <script>
+        const BASE_URL = `http://${window.location.hostname}:80`; // Define global base URL
+
+        function updateImageSize(value) {
+            let image = document.getElementById("market-image");
+            let scaleFactor = value / 50000;  // Adjust this factor based on your market cap range
+            let maxWidth = window.innerWidth / 3; // 1/3 of the viewport width
+            let newSize = Math.max(100, maxWidth * scaleFactor); // Keep a minimum size
+
+            image.style.width = newSize + "px";
+            image.style.height = "auto"; // Maintain aspect ratio
+
+            // Update the market cap text
+            document.getElementById("market-cap-text").innerText = `$FROGLALA MARKET CAP: $${value.toLocaleString()}`;
+        }
+
+        function fetchMarketCap() {
+            fetch(`${BASE_URL}/get-market-cap`)
+                .then(response => response.json()) 
+                .then(data => {
+                    console.log("Market Cap:", data);
+                    if (data.market_cap) {
+                        updateImageSize(data.market_cap);
+                    }
+                })
+                .catch(error => console.error('Error fetching market cap:', error));
+        }
+
+        // Fetch market cap every 30 seconds
+        setInterval(fetchMarketCap, 30000);
+        
+        // Initial fetch
+        window.onload = fetchMarketCap;
+    </script>
+
+    <style>
+        body {
+            background-color: black;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Frog GIF in upper left corner */
+        #frog-container {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            text-align: center;
+        }
+        #frog-gif {
+            width: 80px;
+            height: auto;
+        }
+        #frog-text {
+            color: #00ff00;
+            font-size: 14px;
+            font-family: Arial, sans-serif;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        /* Container to hold the image and overlay text */
+        .market-container {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%); /* Centers it horizontally */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        #market-image {
+            width: 33vw;
+            height: auto;
+            transition: width 0.5s ease, height 0.5s ease;
+        }
+
+        /* Overlay text and link */
+        .overlay {
+            position: absolute;
+            bottom: 20%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        #market-cap-text {
+            color: #00ff00;
+            font-size: 24px;
+            font-family: Arial, sans-serif;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        #market-cap-link {
+            color: #00ff00;
+            font-size: 18px;
+            text-decoration: none;
+            display: block;
+        }
+
+        #market-cap-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Frog GIF + Text in Upper Left -->
+    <div id="frog-container">
+        <img id="frog-gif" alt="Frog GIF">
+        <p id="frog-text">GROW TOMMY<br>SAVE TRAVIS<br>$FROGLALA</p>
+    </div>
+
+    <!-- Main Market Cap Container with Image and Overlay -->
+    <div class="market-container">
+        <img id="market-image" alt="Market Cap Image">
+        
+        <!-- Overlay Text and Link -->
+        <div class="overlay">
+            <p id="market-cap-text">$FROGLALA MARKET CAP: $0</p>
+            <a id="market-cap-link" 
+               href="https://pump.fun/coin/GG9197MJXD55vqKfjXHMyq76rH57wa8dgHuMhCQEpump?coins_sort=market_cap" 
+               target="_blank">
+               BUY $FROGLALA HERE
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Set image sources dynamically using BASE_URL
+        document.getElementById("frog-gif").src = `${BASE_URL}/static/frog.gif`;
+        document.getElementById("market-image").src = `${BASE_URL}/static/smokes.png`;
+    </script>
+
+</body>
+</html>
